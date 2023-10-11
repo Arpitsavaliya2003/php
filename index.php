@@ -42,13 +42,31 @@
                             <button type="submit">Search</button>
                         </form>
                     <?php
+
+                    error_reporting(0);
                     // Include config file
                     require_once "config.php";
+                    $search = $_GET['search'];
 
-                  
+                    // if (isset($_GET['search'])) {
+                        // Database connection parameters
+                
+                        // Sanitize the search term
+                        $searchTerm = mysqli_real_escape_string($link, $_GET['search']);
+                
+                        // SQL query to search for products matching the search term
+                        $sql = "SELECT * FROM employees WHERE id LIKE '%$searchTerm%'";
+                
+                        // Execute the query
+                        $result = mysqli_query($link, $sql);
+                
+                        // Check if the query was successful
+                        if (!$result) {
+                            die("Query failed: " . mysqli_error($link));
+                        }
 
                     // Attempt select query execution
-                    $sql = "SELECT * FROM employees";
+                    // $sql = "SELECT * FROM employees";
                     if($result = mysqli_query($link, $sql)){
                         if(mysqli_num_rows($result) > 0){
                             echo '<table class="table table-bordered table-striped">';
@@ -63,22 +81,7 @@
                                 echo "</thead>";
                                 echo "<tbody>";
 
-                                if (isset($_GET['search'])) {
-                                    // Database connection parameters
-                            
-                                    // Sanitize the search term
-                                    $searchTerm = mysqli_real_escape_string($link, $_GET['search']);
-                            
-                                    // SQL query to search for products matching the search term
-                                    $sql = "SELECT * FROM employees WHERE id LIKE '%$searchTerm%'";
-                            
-                                    // Execute the query
-                                    $result = mysqli_query($link, $sql);
-                            
-                                    // Check if the query was successful
-                                    if (!$result) {
-                                        die("Query failed: " . mysqli_error($link));
-                                    }
+                                
                                 while($row = mysqli_fetch_array($result)){
                                     echo "<tr>";
                                         echo "<td>" . $row['id'] . "</td>";
@@ -105,7 +108,7 @@
  
                     // Close connection
                     mysqli_close($link);
-                }
+                
                     ?>
                 </div>
             </div>        
